@@ -7,15 +7,17 @@ pipeline {
     }
 
     parameters {
-        string(
+        choice(
             name: 'BRANCH_NAME',
-            defaultValue: 'main',
-            description: 'Git branch to build from'
+            choices: ['main', 'develop', 'release', 'feature'],
+            description: 'Select the Git branch to build from'
         )
-    }
 
-    environment {
-        TESTNG_XML = 'testng.xml'  // Path to your TestNG suite file
+        string(
+            name: 'TESTNG_XML',
+            defaultValue: 'testng.xml',
+            description: 'TestNG suite XML file to run'
+        )
     }
 
     stages {
@@ -35,8 +37,8 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                echo 'Executing tests...'
-                bat "mvn test -DsuiteXmlFile=${env.TESTNG_XML}"
+                echo "Executing tests with suite: ${params.TESTNG_XML}"
+                bat "mvn test -DsuiteXmlFile=${params.TESTNG_XML}"
             }
         }
 
