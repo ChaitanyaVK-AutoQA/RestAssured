@@ -6,6 +6,14 @@ pipeline {
         maven 'Maven3'    // Ensure this matches the Maven name in Jenkins Global Tool Configuration
     }
 
+    parameters {
+        string(
+            name: 'BRANCH_NAME',
+            defaultValue: 'main',
+            description: 'Git branch to build from'
+        )
+    }
+
     environment {
         TESTNG_XML = 'testng.xml'  // Path to your TestNG suite file
     }
@@ -13,8 +21,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
-                git branch: 'main', url: 'https://github.com/ChaitanyaVK-AutoQA/RestAssured'
+                echo "Cloning repository from branch: ${params.BRANCH_NAME}"
+                git branch: "${params.BRANCH_NAME}", url: 'https://github.com/ChaitanyaVK-AutoQA/RestAssured'
             }
         }
 
